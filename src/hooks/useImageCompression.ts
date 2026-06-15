@@ -1,7 +1,8 @@
-// src/hooks/useImageCompression.ts
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { compressBlob, extractDocxImages } from "@/lib/image-compression";
+
+const DEFAULT_QUALITY = 60;
 
 export interface DocxImage {
   path: string;
@@ -17,6 +18,7 @@ export const useImageCompression = () => {
   const [images, setImages] = useState<DocxImage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [qualities, setQualities] = useState<number[]>([]);
+  const [edited, setEdited] = useState<boolean[]>([]);
   const [loading, setLoading] = useState(false);
   const [originalFileName, setOriginalFileName] = useState("document.docx");
 
@@ -24,6 +26,23 @@ export const useImageCompression = () => {
   useEffect(() => {
     imagesRef.current = images;
   }, [images]);
+
+  const navigateTo = useCallback((targetIndex: number) => {
+    if (targetIndex === currentIndex || targetIndex < 0 || targetIndex >= images.length) return;
+    setQualities((prev) => {
+      const next = [...prev];
+      if (!edited[targetIndex]) {
+        next[targetIndex] = next[currentIndex];
+      }
+      return next;
+    });
+    setEdited((prev) => {
+      const next = [...prev];
+      next[targetIndex] = true;
+      return next;
+    });
+    setCurrentIndex(targetIndex);
+  }, [currentIndex, edited, images.length]);
 
   const handleImageUpload = useCallback(
     async (files: FileList | File[]) => {
@@ -59,7 +78,8 @@ export const useImageCompression = () => {
             compressedSize: img.size,
           }))
         );
-        setQualities(new Array(extractedImages.length).fill(60));
+        setQualities(new Array(extractedImages.length).fill(DEFAULT_QUALITY));
+        setEdited(new Array(extractedImages.length).fill(false));
         setCurrentIndex(0);
         setOriginalFileName(docx.name);
         setStep("compress");
@@ -74,7 +94,6 @@ export const useImageCompression = () => {
     []
   );
 
-  // Compress current image when index or quality changes
   useEffect(() => {
     if (step !== "compress" || imagesRef.current.length === 0) return;
     const q = qualities[currentIndex];
@@ -135,19 +154,19 @@ export const useImageCompression = () => {
       next[currentIndex] = val;
       return next;
     });
+    setEdited((prev) => {
+      const next = [...prev];
+      next[currentIndex] = true;
+      return next;
+    });
   };
 
-  const nextImage = () => {
-    setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
-  };
-
-  const prevImage = () => {
-    setCurrentIndex((i) => Math.max(i - 1, 0));
-  };
+  const nextImage = () => navigateTo(currentIndex + 1);
+  const prevImage = () => navigateTo(currentIndex - 1);
 
   const jumpToImage = (index: number) => {
     if (index >= 1 && index <= images.length) {
-      setCurrentIndex(index - 1);
+      navigateTo(index - 1);
     } else {
       toast.error(`Введите номер от 1 до ${images.length}`);
     }
@@ -193,6 +212,7 @@ export const useImageCompression = () => {
     setImages([]);
     setCurrentIndex(0);
     setQualities([]);
+    setEdited([]);
     setOriginalFileName("document.docx");
   };
 
@@ -200,7 +220,7 @@ export const useImageCompression = () => {
     step,
     images,
     currentIndex,
-    quality: qualities[currentIndex] ?? 60,
+    quality: qualities[currentIndex] ?? DEFAULT_QUALITY,
     loading,
     hasImages: images.length > 0,
     handleImageUpload,
