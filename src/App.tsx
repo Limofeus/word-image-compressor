@@ -172,6 +172,7 @@ function App() {
                 </div>
 
                 <ImageQualitySlider
+                  key={currentIndex}
                   value={quality}
                   onImageQualityChange={onImageQualityChange}
                 />
