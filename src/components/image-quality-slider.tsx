@@ -1,3 +1,4 @@
+// src/components/image-quality-slider.tsx
 const ImageQualitySlider = ({
   value,
   onImageQualityChange,
@@ -5,35 +6,28 @@ const ImageQualitySlider = ({
   value: number;
   onImageQualityChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
-  const quality = Math.round((value / 100) * 10) / 10;
-
   const getImageQualityInfo = (q: number) => {
-    if (q === 0) return { label: "Not Recommended", color: "#e14f42" };
-    if (q === 0.2 || q === 0.4) return { label: "Moderate", color: "#f3d35f" };
-    if (q === 0.6 || q === 0.8)
-      return { label: "Recommended", color: "#3fc97f" };
-    if (q === 1) return { label: "Not Recommended", color: "#e14f42" };
-    if (Math.abs(q - 0.6) < 0.05 || Math.abs(q - 0.8) < 0.05)
-      return { label: "Recommended", color: "#3fc97f" };
-    if (Math.abs(q - 0.2) < 0.05 || Math.abs(q - 0.4) < 0.05)
-      return { label: "Moderate", color: "#f3d35f" };
-    if (Math.abs(q - 1) < 0.05)
-      return { label: "Not Recommended", color: "#e14f42" };
+    if (q === 0) return { label: "ШАКАЛЫ", color: "#e14f42" };
+    if (q === 20) return { label: "ПОТЕРЯННЫЕ ПИКСЕЛИ", color: "#f3d35f" };
+    if (q === 40) return { label: "2007 КОЛЛИНТА", color: "#f3a235" };
+    if (q === 60) return { label: "БАЛАНС", color: "#3fc97f" };
+    if (q === 80) return { label: "ПРЕМИУМ", color: "#2baf6b" };
+    if (q === 100) return { label: "БЕЗ ИЗМЕНЕНИЙ", color: "#6366f1" };
     return { label: "", color: "#000" };
   };
 
-  const { label, color } = getImageQualityInfo(quality);
+  const { label, color } = getImageQualityInfo(value);
 
   return (
-    <div className="animate-fadeIn animate-delay-150 w-full">
+    <div className="w-full">
       <label className="text-base font-bold">
-        Image Quality: {value}%
+        Степень сжатия: {value}%
         <span style={{ color }} className="ml-1">
           ({label})
         </span>
       </label>
       <p className="text-muted-foreground text-sm">
-        Higher quality = larger file size
+        Чем меньше — тем меньше вес, но больше артефактов
       </p>
       <div className="relative mb-4">
         <input
@@ -45,13 +39,13 @@ const ImageQualitySlider = ({
           step={20}
           onChange={onImageQualityChange}
         />
-        <div className="mt-1 flex justify-between text-sm">
-          <span className="text-destructive">Low</span>
-          <span className="text-warning">Fair</span>
-          <span className="text-warning">Okay</span>
-          <span className="text-success">Good</span>
-          <span className="text-success">High</span>
-          <span className="text-destructive">Max</span>
+        <div className="mt-1 flex justify-between text-xs font-bold">
+          <span className="text-destructive">ШАКАЛЫ</span>
+          <span className="text-warning">ПИКСЕЛИ</span>
+          <span className="text-warning">2007</span>
+          <span className="text-success">БАЛАНС</span>
+          <span className="text-success">ПРЕМИУМ</span>
+          <span className="text-[#6366f1]">ОРИГИНАЛ</span>
         </div>
       </div>
     </div>
