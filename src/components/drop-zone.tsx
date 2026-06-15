@@ -1,5 +1,6 @@
+// src/components/drop-zone.tsx
 import { filterValidFiles } from "@/lib/file-validation";
-import { ImageIcon } from "lucide-react";
+import { FileArchive } from "lucide-react";
 import { useRef } from "react";
 import { useDragAndDrop } from "../hooks/useDragAndDrop";
 
@@ -45,23 +46,24 @@ const DropZone = ({ onFilesSelected, hasCompressedImages }: DropZoneProps) => {
       htmlFor="file-input"
     >
       <input
-        multiple
         type="file"
-        accept="image/jpeg,image/jpg,image/png,image/webp"
+        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         onChange={handleImageUpload}
         style={{ display: "none" }}
         id="file-input"
         className="sr-only"
-        aria-label="Upload image file"
+        aria-label="Upload DOCX file"
       />
-      <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
+      <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
         <div className="mb-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border bg-white dark:bg-gray-800">
-          <ImageIcon className="size-4 opacity-60" />
+          <FileArchive className="size-4 opacity-60" />
         </div>
         <p className="mb-1 text-base font-medium">
-          {isDragActive ? "Drop your images here" : "Drag & drop images here"}
+          {isDragActive ? "Бросайте сюда диплом!" : "Перетащите DOCX файл сюда"}
         </p>
-        <p className="text-muted-foreground text-sm">JPG, JPEG, PNG, WEBP</p>
+        <p className="text-muted-foreground text-sm">
+          .docx — Word документ с картинками
+        </p>
       </div>
     </label>
   );
