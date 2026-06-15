@@ -1,4 +1,3 @@
-// src/lib/image-compression.ts
 import JSZip from "jszip";
 
 export const compressBlob = async (
@@ -21,6 +20,11 @@ export const compressBlob = async (
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;
   const ctx = canvas.getContext("2d")!;
+
+  // Заливка белым, чтобы PNG не ложился на чёрный фон
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.drawImage(img, 0, 0);
   URL.revokeObjectURL(url);
 
