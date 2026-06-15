@@ -15,7 +15,7 @@ const Footer = () => {
           </svg>
         </span>
         ное.{" "}
-        <span className="text-muted-foreground">ВОРДКОМПРЕСОР3000</span>
+        <span className="text-muted-foreground">без негатива</span>
       </span>
     </footer>
   );
